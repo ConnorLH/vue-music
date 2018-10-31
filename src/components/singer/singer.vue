@@ -1,5 +1,6 @@
 <template>
   <div class="singer">
+    <list-view :data="singers"></list-view>
   </div>
 </template>
 
@@ -8,6 +9,7 @@
   import {ERR_OK} from 'api/config'
   import Singer from 'common/js/singer'
   import {isChinese, getPinYinFirstCharacter} from 'common/js/pinyin'
+  import ListView from 'base/listview/listview'
 
   const HOT_NAME = '热门'
   const HOT_SINGER_LIST = 10
@@ -25,7 +27,7 @@
       _getSingerList() {
         getSingerList().then(res => {
           if (res.code === ERR_OK) {
-            this.singers = res.singerList.data.singerlist
+            this.singers = this._normalizeSinger(res.singerList.data.singerlist)
           }
         })
       },
@@ -64,8 +66,25 @@
             avatar: item.singer_pic
           }))
         })
-        return map
+        // 为了得到有序列表，我们需要处理 map
+        let ret = []
+        let hot = []
+        for (let key in map) {
+          let val = map[key]
+          if (val.title.match(/[a-zA-Z]/)) {
+            ret.push(val)
+          } else if (val.title === HOT_NAME) {
+            hot.push(val)
+          }
+        }
+        ret.sort((a, b) => {
+          return a.title.charCodeAt(0) - b.title.charCodeAt(0)
+        })
+        return hot.concat(ret)
       }
+    },
+    components: {
+      ListView
     }
   }
 </script>
