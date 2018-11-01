@@ -67,7 +67,6 @@
       _getDiscList() {
         getDiscList().then((res) => {
           if (res.code === ERR_OK) {
-            console.log(res.data.songList)
             this.discList = res.data.songList
           }
         })

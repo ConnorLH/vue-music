@@ -1,6 +1,7 @@
 <template>
   <div class="singer">
-    <list-view :data="singers"></list-view>
+    <list-view :data="singers" @select="selectSinger"></list-view>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -10,6 +11,8 @@
   import Singer from 'common/js/singer'
   import {isChinese, getPinYinFirstCharacter} from 'common/js/pinyin'
   import ListView from 'base/listview/listview'
+  // vue对vuex各组件的封装
+  import {mapMutations} from 'vuex'
 
   const HOT_NAME = '热门'
   const HOT_SINGER_LIST = 10
@@ -48,6 +51,7 @@
           if (index < HOT_SINGER_LIST) {
             map.hot.items.push(new Singer({
               id: item.firstCharacter,
+              mid: item.singer_mid,
               name: item.singer_name,
               avatar: item.singer_pic
             }))
@@ -62,6 +66,7 @@
           }
           map[key].items.push(new Singer({
             id: item.firstCharacter,
+            mid: item.singer_mid,
             name: item.singer_name,
             avatar: item.singer_pic
           }))
@@ -81,7 +86,16 @@
           return a.title.charCodeAt(0) - b.title.charCodeAt(0)
         })
         return hot.concat(ret)
-      }
+      },
+      selectSinger(singer) {
+        this.$router.push({
+          path: `/singer/${singer.mid}`
+        })
+        this.setSinger(singer)
+      },
+      ...mapMutations({
+        setSinger: 'SET_SINGER'
+      })
     },
     components: {
       ListView

@@ -20,6 +20,10 @@
       data: {
         type: Array,
         default: null
+      },
+      listenScroll: {
+        type: Boolean,
+        default: false
       }
     },
     mounted() {
@@ -36,6 +40,15 @@
           probeType: this.probeType,
           click: this.click
         })
+
+        if (this.listenScroll) {
+          let me = this
+          this.scroll.on('scroll', pos => {
+            // 子组件向父组件传值的方式，使用事件派发
+            // 这里pos是Y轴滚动到可见部分的实际高度（就是上部不可见部分高度）
+            me.$emit('scroll', pos)
+          })
+        }
       },
       enable() {
         this.scroll && this.scroll.enable()
