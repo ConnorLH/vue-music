@@ -39,23 +39,29 @@
         }
         getSingerDetail(this.singer.mid).then((res) => {
           if (res.code === ERR_OK) {
-            this.songList = this._normalizeSongs(res.data.list)
+            this._normalizeSongs(res.data.list)
           }
         })
       },
       _normalizeSongs(list) {
         let ret = []
+        let promiseArr = []
         list.forEach((item) => {
           let {musicData} = item
           if (musicData.songid && musicData.albummid) {
-            getMusic(musicData.songmid).then((res) => {
+            let promise = getMusic(musicData.songmid)
+            promiseArr.push(promise)
+            promise.then((res) => {
               const svley = res.data.items
               const songVkey = svley[0].vkey
               ret.push(createSong(musicData, songVkey))
             })
           }
         })
-        return ret
+        // 这里等待每首歌异步获取了播放源后再统一返回，避免直接返回后，异步执行的结果会修改vuex管理的状态，造成vuex报不能使用除mutation外的方式修改数据
+        Promise.all(promiseArr).then(() => {
+          this.songList = ret
+        })
       }
     },
     components: {
