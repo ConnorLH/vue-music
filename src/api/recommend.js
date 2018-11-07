@@ -1,6 +1,6 @@
 import jsonp from 'common/js/jsonp'
 import {commonParams, options} from './config'
-// import axios from 'axios'
+import axios from 'axios'
 
 export function getRecommend() {
   const url = 'https://c.y.qq.com/musichall/fcgi-bin/fcg_yqqhomepagerecommend.fcg'
@@ -43,3 +43,54 @@ export function getDiscList() {
 //     return Promise.resolve(res.data)
 //   })
 // }
+
+// export function getSongList(discId) {
+//   const url = 'https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg'
+//
+//   const data = Object.assign({}, commonParams, {
+//     platform: 'yqq',
+//     uin: 0,
+//     needNewCode: 1,
+//     new_format: 1,
+//     pic: 500,
+//     disstid: discId,
+//     type: 1,
+//     json: 1,
+//     utf8: 1,
+//     onlysong: 0,
+//     picmid: 1,
+//     nosign: 1,
+//     song_begin: 0,
+//     song_num: 15,
+//     loginUin: 0,
+//     hostUin: 0
+//   })
+//   return jsonp(url, data, options)
+// }
+
+export function getSongList(discId) {
+  const url = '/api/getDiscInfo'
+  const data = Object.assign({}, commonParams, {
+    platform: 'yqq',
+    uin: 0,
+    needNewCode: 1,
+    new_format: 1,
+    pic: 500,
+    disstid: discId,
+    type: 1,
+    json: 1,
+    utf8: 1,
+    onlysong: 0,
+    picmid: 1,
+    nosign: 1,
+    song_begin: 0,
+    song_num: 15,
+    loginUin: 0,
+    hostUin: 0
+  })
+  return axios.get(url, {
+    params: data
+  }).then((res) => {
+    return Promise.resolve(res.data)
+  })
+}

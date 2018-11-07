@@ -1,6 +1,6 @@
 <template>
-  <div class="singer">
-    <list-view :data="singers" @select="selectSinger"></list-view>
+  <div class="singer" ref="singer">
+    <list-view :data="singers" @select="selectSinger" ref="singerlist"></list-view>
     <router-view></router-view>
   </div>
 </template>
@@ -13,11 +13,13 @@
   import ListView from 'base/listview/listview'
   // vue对vuex各组件的封装
   import {mapMutations} from 'vuex'
+  import {playlistMixin} from 'common/js/mixin'
 
   const HOT_NAME = '热门'
   const HOT_SINGER_LIST = 10
 
   export default {
+    mixins: [playlistMixin],
     data() {
       return {
         singers: []
@@ -27,6 +29,11 @@
       this._getSingerList()
     },
     methods: {
+      handlePlaylist(playlist) {
+        const bottomHeight = playlist.length > 0 ? '60px' : ''
+        this.$refs.singer.style.bottom = bottomHeight
+        this.$refs.singerlist.refresh()
+      },
       _getSingerList() {
         getSingerList().then(res => {
           if (res.code === ERR_OK) {
