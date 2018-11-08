@@ -44,6 +44,7 @@
         })
       },
       _normalizeSongs(list) {
+        // console.log(list)
         let ret = []
         let promiseArr = []
         list.forEach((item) => {
