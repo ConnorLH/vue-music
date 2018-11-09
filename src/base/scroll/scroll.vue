@@ -1,7 +1,7 @@
 <template>
-    <div ref="wrapper">
-      <slot></slot>
-    </div>
+  <div ref="wrapper">
+    <slot></slot>
+  </div>
 </template>
 
 <script type="text/ecmascript-6">
@@ -24,6 +24,16 @@
       listenScroll: {
         type: Boolean,
         default: false
+      },
+      // 上拉刷新开关
+      pullup: {
+        type: Boolean,
+        default: () => false
+      },
+      // 监听是否滚动
+      beforeScroll: {
+        type: Boolean,
+        default: () => false
       }
     },
     mounted() {
@@ -47,6 +57,19 @@
             // 子组件向父组件传值的方式，使用事件派发
             // 这里pos是Y轴滚动到可见部分的实际高度（就是上部不可见部分高度）
             me.$emit('scroll', pos)
+          })
+        }
+        if (this.pullup) {
+          this.scroll.on('scrollEnd', () => {
+            if (this.scroll.y <= (this.scroll.maxScrollY + 50)) {
+              this.$emit('scrollToEnd')
+            }
+          })
+        }
+
+        if (this.beforeScroll) {
+          this.scroll.on('beforeScrollStart', () => {
+            this.$emit('beforeScroll')
           })
         }
       },
