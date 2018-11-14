@@ -34,6 +34,11 @@
       beforeScroll: {
         type: Boolean,
         default: () => false
+      },
+      refreshDelay: {
+        // 主要用于确保列表元素动画完毕后再刷新Scoll
+        type: Number,
+        default: () => 20
       }
     },
     mounted() {
@@ -90,10 +95,13 @@
       }
     },
     watch: {
-      data() {
+      data(newData, oldData) {
+        console.log('需要滚动的数据变了')
+        console.log(oldData)
+        console.log(newData)
         setTimeout(() => {
           this.refresh()
-        }, 20)
+        }, this.refreshDelay)
       }
     }
   }

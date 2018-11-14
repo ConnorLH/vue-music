@@ -33,6 +33,7 @@
         }
       },
       created() {
+        // 使用节流函数控制一定时间内输入变化不触发搜索事件
         this.$watch('query', debounce((newQuery) => {
           this.$emit('query', newQuery)
         }, 200))

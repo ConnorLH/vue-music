@@ -153,7 +153,10 @@
       ])
     },
     watch: {
-      query() {
+      query(newQuery) {
+        if (!newQuery) {
+          return
+        }
         this.search()
       }
     },
